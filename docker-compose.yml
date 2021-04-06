@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  dockerdemoapi:
+    image: ${DOCKER_REGISTRY-}dockerdemoapi
+    build:
+      context: .
+      dockerfile: DockerDemoAPI/Dockerfile
+    environment:
+    - DATABASE_URL=host=pg;user id=postgres; password=mypassword;
+    depends_on:
+    - pg
+
+  dockerdemo:
+    image: ${DOCKER_REGISTRY-}dockerdemo
+    build:
+      context: .
+      dockerfile: DockerDemo/Dockerfile
+    environment:
+      - API_ADDRESS=http://dockerdemoapi
+    ports:
+      - 5000:80
+
+  pg:
+    image: postgres
+    environment:
+    - POSTGRES_PASSWORD=mypassword
+
